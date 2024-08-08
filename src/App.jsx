@@ -37,7 +37,7 @@ function App() {
     
   }
 async function sendbackend(profile){
-      const {data} =await axios.post('http://localhost:5000/api/users/social',{profile })
+      const {data} =await axios.post( `${(import.meta.env.VITE_dburl)}/social` ,{profile })
       console.log(data);
       setProfile(data)
 }
