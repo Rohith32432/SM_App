@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 import './App.css'
-
+import axios from 'axios'
 import {
   LoginSocialGoogle
 } from 'reactjs-social-login'
@@ -29,19 +29,23 @@ function App() {
       }
 
       const userProfile = await response.json();
-      console.log('User Profile:', userProfile);
-      setProfile(userProfile);
+
+      sendbackend(userProfile)
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
     
   }
-//"email profile openid https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+async function sendbackend(profile){
+      const {data} =await axios.post('http://localhost:5000/api/users/social',{profile })
+      console.log(data);
+      setProfile(data)
+}
   return (
   <>
    <LoginSocialGoogle
             isOnlyGetToken   
-            client_id={'1094867572386-7k917l8bot2t0765tobts48u9qkkgrd1.apps.googleusercontent.com' || ''}
+            client_id={(import.meta.env.VITE_GURI) || ''}
             onLoginStart={onLoginStart}
             onResolve={({ provider, data }) => {
              ontest(provider,data)
@@ -53,6 +57,18 @@ function App() {
             <button>login</button>
             </LoginSocialGoogle>
 
+<br />
+{
+profile &&
+<div>
+
+<img src={profile.picture} alt="" />            
+<h2>name {profile.name}</h2>
+<h2><code>
+  email : {profile.email}
+  </code></h2>
+</div>
+}
     
   </>
   )
